@@ -1,0 +1,172 @@
+@model TechStore.Web.Models.ProductViewModel
+
+@{
+    ViewData["Title"] = "Editar produto";
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h1 class="display-6 fw-bold">
+            Editar produto
+        </h1>
+
+        <p class="text-muted">
+            Altere as informações do produto
+        </p>
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            @if (ViewBag.Erro != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewBag.Erro
+                </div>
+            }
+
+            <form asp-controller="Products"
+                  asp-action="Edit"
+                  method="post">
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Name"
+                               class="form-label">
+                            Nome
+                        </label>
+
+                        <input asp-for="Name"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Code"
+                               class="form-label">
+                            Código
+                        </label>
+
+                        <input asp-for="Code"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label asp-for="Description"
+                               class="form-label">
+                            Descrição
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="3"></textarea>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Price"
+                               class="form-label">
+                            Preço
+                        </label>
+
+                        <input type="text"
+                               name="Price"
+                               value="@Model.Price"
+                               class="form-control"
+                               inputmode="decimal"
+                               required />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="CategoryId"
+                               class="form-label">
+                            Categoria
+                        </label>
+
+                        <select asp-for="CategoryId"
+                                class="form-select">
+
+                            <option value="">
+                                Selecione uma categoria
+                            </option>
+
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                <option value="@category.Id">
+                                    @category.Name
+                                </option>
+                            }
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Quantity"
+                               class="form-label">
+                            Quantidade
+                        </label>
+
+                        <input asp-for="Quantity"
+                               type="number"
+                               min="0"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="MinimumStock"
+                               class="form-label">
+                            Estoque mínimo
+                        </label>
+
+                        <input asp-for="MinimumStock"
+                               type="number"
+                               min="0"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <div class="col-12 mt-4">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Salvar alterações
+                        </button>
+
+                        <a asp-controller="Products"
+                           asp-action="Index"
+                           class="btn btn-secondary">
+                            Cancelar
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

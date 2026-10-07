@@ -1,0 +1,133 @@
+@model TechStore.Web.Models.RegisterUserViewModel
+
+@{
+    ViewData["Title"] = "Cadastrar usuário";
+}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow">
+
+                <div class="card-body p-4">
+
+                    <div class="mb-4">
+
+                        <h2 class="fw-bold">
+                            Cadastrar usuário
+                        </h2>
+
+                        <p class="text-muted">
+                            Cadastre um novo usuário para acessar o TechStore
+                        </p>
+
+                    </div>
+
+                    @if (TempData["Sucesso"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Sucesso"]
+                        </div>
+                    }
+
+                    @if (ViewBag.Erro != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewBag.Erro
+                        </div>
+                    }
+
+                    <form asp-controller="Account"
+                          asp-action="Register"
+                          method="post">
+
+                        <div class="mb-3">
+
+                            <label asp-for="Name"
+                                   class="form-label">
+                                Nome
+                            </label>
+
+                            <input asp-for="Name"
+                                   class="form-control"
+                                   placeholder="Digite o nome"
+                                   autocomplete="name"
+                                   required />
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label asp-for="Email"
+                                   class="form-label">
+                                E-mail
+                            </label>
+
+                            <input asp-for="Email"
+                                   type="email"
+                                   class="form-control"
+                                   placeholder="Digite o e-mail"
+                                   autocomplete="email"
+                                   required />
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label asp-for="Password"
+                                   class="form-label">
+                                Senha
+                            </label>
+
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="Digite a senha"
+                                   autocomplete="new-password"
+                                   required />
+
+                            <div class="form-text">
+                                A senha deve possuir pelo menos 6 caracteres.
+                            </div>
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label asp-for="ConfirmPassword"
+                                   class="form-label">
+                                Confirmar senha
+                            </label>
+
+                            <input asp-for="ConfirmPassword"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="Digite a senha novamente"
+                                   autocomplete="new-password"
+                                   required />
+
+                        </div>
+
+                        <div class="d-grid">
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Cadastrar usuário
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

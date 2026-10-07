@@ -1,0 +1,107 @@
+@model List<TechStore.Web.Models.StockMovementViewModel>
+
+@{
+    ViewData["Title"] = "Movimentações";
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h1 class="display-6 fw-bold">
+            Movimentações de estoque
+        </h1>
+
+        <p class="text-muted">
+            Histórico de entradas e saídas de produtos
+        </p>
+    </div>
+
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Erro
+        </div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            Nenhuma movimentação registrada.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Produto</th>
+                                <th>Tipo</th>
+                                <th>Quantidade</th>
+                                <th>Data</th>
+                                <th>Observação</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var movement in Model)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @movement.Id
+                                    </td>
+
+                                    <td>
+                                        @(movement.Product?.Name
+                                            ?? $"Produto #{movement.ProductId}")
+                                    </td>
+
+                                    <td>
+                                        @if (movement.Type == "Entrada")
+                                        {
+                                            <span class="badge bg-success">
+                                                Entrada
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">
+                                                Saída
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @movement.Quantity
+                                    </td>
+
+                                    <td>@movement.Date.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+
+                                    <td>
+                                        @movement.Observation
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

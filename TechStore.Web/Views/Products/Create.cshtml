@@ -1,0 +1,146 @@
+@model TechStore.Web.Models.ProductViewModel
+
+@{
+    ViewData["Title"] = "Novo produto";
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h1 class="display-6 fw-bold">
+            Novo produto
+        </h1>
+
+        <p class="text-muted">
+            Cadastre um novo produto no sistema
+        </p>
+    </div>
+
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Erro
+        </div>
+    }
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <form asp-action="Create" method="post">
+
+                <div class="mb-3">
+                    <label asp-for="Name"
+                           class="form-label">
+                        Nome
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Code"
+                           class="form-label">
+                        Código
+                    </label>
+
+                    <input asp-for="Code"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description"
+                           class="form-label">
+                        Descrição
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="3">
+                    </textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Price"
+                           class="form-label">
+                        Preço
+                    </label>
+
+                    <input asp-for="Price"
+                           type="text"
+                           inputmode="decimal"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MinimumStock"
+                           class="form-label">
+                        Estoque mínimo
+                    </label>
+
+                    <input asp-for="MinimumStock"
+                           type="number"
+                           min="0"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CategoryId"
+                           class="form-label">
+                        Categoria
+                    </label>
+
+                    <select asp-for="CategoryId"
+                            class="form-select">
+
+                        <option value="">
+                            Selecione uma categoria
+                        </option>
+
+                        @if (ViewBag.Categories != null)
+                        {
+                            foreach (var category in ViewBag.Categories)
+                            {
+                                <option value="@category.Id">
+                                    @category.Name
+                                </option>
+                            }
+                        }
+
+                    </select>
+                </div>
+
+                @* Todo produto é cadastrado com estoque zero.
+                   O estoque deve ser alterado somente
+                   através de Entrada e Saída. *@
+
+                <input type="hidden"
+                       asp-for="Quantity"
+                       value="0" />
+
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Salvar
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-secondary">
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

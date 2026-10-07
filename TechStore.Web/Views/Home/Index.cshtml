@@ -1,0 +1,129 @@
+﻿@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Dashboard";
+
+    var dashboard = (JsonElement)ViewBag.Dashboard;
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h1 class="display-5 fw-bold">TechStore</h1>
+        <p class="text-muted">Dashboard de controle de estoque</p>
+    </div>
+
+    @if (ViewBag.Erro is string erro)
+    {
+        <div class="alert alert-danger">
+            @erro
+        </div>
+    }
+    else
+    {
+        <div class="row g-4 mb-4">
+
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted">Produtos</h6>
+                        <h2>@dashboard.GetProperty("totalProducts").GetInt32()</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted">Categorias</h6>
+                        <h2>@dashboard.GetProperty("totalCategories").GetInt32()</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted">Estoque atual</h6>
+                        <h2>@dashboard.GetProperty("totalStock").GetInt32()</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="text-muted">Estoque baixo</h6>
+                        <h2>@dashboard.GetProperty("lowStockProducts").GetInt32()</h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h3 class="mb-4">Movimentações recentes</h3>
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Tipo</th>
+                                <th>Quantidade</th>
+                                <th>Data</th>
+                                <th>Observação</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var movement in dashboard
+                                .GetProperty("recentMovements")
+                                .EnumerateArray())
+                            {
+                                var data = movement
+                                    .GetProperty("date")
+                                    .GetDateTime()
+                                    .ToLocalTime();
+
+                                <tr>
+                                    <td>
+                                        @movement.GetProperty("productName").GetString()
+                                    </td>
+
+                                    <td>
+                                        @movement.GetProperty("type").GetString()
+                                    </td>
+
+                                    <td>
+                                        @movement.GetProperty("quantity").GetInt32()
+                                    </td>
+
+                                    <td>
+                                        @data.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+
+                                    <td>
+                                        @movement.GetProperty("observation").GetString()
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

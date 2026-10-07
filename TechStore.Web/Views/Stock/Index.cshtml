@@ -1,0 +1,112 @@
+@model List<TechStore.Web.Models.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Estoque";
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h1 class="display-6 fw-bold">
+            Estoque
+        </h1>
+
+        <p class="text-muted">
+            Consulte a quantidade atual dos produtos em estoque
+        </p>
+    </div>
+
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Erro
+        </div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            Nenhum produto cadastrado.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Produto</th>
+                                <th>Categoria</th>
+                                <th>Estoque atual</th>
+                                <th>Estoque mínimo</th>
+                                <th>Situação</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var product in Model)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @product.Code
+                                    </td>
+
+                                    <td>
+                                        @product.Name
+                                    </td>
+
+                                    <td>
+                                        @(product.Category?.Name ?? "Sem categoria")
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            @product.Quantity
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @product.MinimumStock
+                                    </td>
+
+                                    <td>
+
+                                        @if (product.Quantity <= product.MinimumStock)
+                                        {
+                                            <span class="badge bg-danger">
+                                                Estoque baixo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">
+                                                Normal
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

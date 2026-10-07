@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="TechStore.Mobile.Views.MovementsPage"
+    Title="Movimentações"
+    BackgroundColor="#F5F7FA">
+
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,*"
+        RowSpacing="15">
+
+        <VerticalStackLayout Spacing="4">
+
+            <Label
+                Text="Movimentações"
+                FontSize="28"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="Histórico de entradas e saídas do estoque"
+                TextColor="#6C757D" />
+
+        </VerticalStackLayout>
+
+        <RefreshView
+            Grid.Row="1"
+            x:Name="RefreshView"
+            Refreshing="OnRefreshing">
+
+            <CollectionView
+                x:Name="MovementsCollection"
+                EmptyView="Nenhuma movimentação encontrada.">
+
+                <CollectionView.ItemTemplate>
+
+                    <DataTemplate>
+
+                        <Border
+                            Margin="0,0,0,12"
+                            Padding="16"
+                            BackgroundColor="White"
+                            Stroke="#DEE2E6">
+
+                            <VerticalStackLayout Spacing="7">
+
+                                <Grid
+                                    ColumnDefinitions="*,Auto">
+
+                                    <Label
+                                        Text="{Binding ProductName}"
+                                        FontSize="18"
+                                        FontAttributes="Bold" />
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding Type}"
+                                        FontAttributes="Bold"
+                                        TextColor="#0D6EFD" />
+
+                                </Grid>
+
+                                <Grid
+                                    ColumnDefinitions="*,*">
+
+                                    <VerticalStackLayout>
+
+                                        <Label
+                                            Text="Quantidade"
+                                            FontSize="12"
+                                            TextColor="#6C757D" />
+
+                                        <Label
+                                            Text="{Binding Quantity}"
+                                            FontSize="18"
+                                            FontAttributes="Bold" />
+
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout
+                                        Grid.Column="1">
+
+                                        <Label
+                                            Text="Data"
+                                            FontSize="12"
+                                            TextColor="#6C757D"
+                                            HorizontalTextAlignment="End" />
+
+                                        <Label
+                                            Text="{Binding FormattedDate}"
+                                            HorizontalTextAlignment="End" />
+
+                                    </VerticalStackLayout>
+
+                                </Grid>
+
+                                <Label
+                                    Text="{Binding Observation, StringFormat='Observação: {0}'}"
+                                    TextColor="#6C757D" />
+
+                            </VerticalStackLayout>
+
+                        </Border>
+
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+        </RefreshView>
+
+    </Grid>
+
+</ContentPage>

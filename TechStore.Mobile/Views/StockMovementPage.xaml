@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="TechStore.Mobile.Views.StockMovementPage"
+    BackgroundColor="#F5F7FA">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="18">
+
+            <VerticalStackLayout Spacing="4">
+
+                <Label
+                    x:Name="TitleLabel"
+                    Text="Movimentação de estoque"
+                    FontSize="28"
+                    FontAttributes="Bold" />
+
+                <Label
+                    x:Name="SubtitleLabel"
+                    Text="Selecione o produto e informe a quantidade"
+                    TextColor="#6C757D" />
+
+            </VerticalStackLayout>
+
+            <Border
+                Padding="20"
+                BackgroundColor="White"
+                Stroke="#DEE2E6">
+
+                <VerticalStackLayout Spacing="15">
+
+                    <Label
+                        Text="Produto"
+                        FontAttributes="Bold" />
+
+                    <Picker
+                        x:Name="ProductPicker"
+                        Title="Selecione um produto"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedIndexChanged="OnProductSelected" />
+
+                    <Border
+                        x:Name="StockInfoBorder"
+                        Padding="12"
+                        BackgroundColor="#F8F9FA"
+                        Stroke="#DEE2E6"
+                        IsVisible="False">
+
+                        <VerticalStackLayout Spacing="3">
+
+                            <Label
+                                x:Name="ProductCodeLabel"
+                                TextColor="#6C757D" />
+
+                            <Label
+                                x:Name="CurrentStockLabel"
+                                FontAttributes="Bold" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                    <Label
+                        Text="Quantidade"
+                        FontAttributes="Bold" />
+
+                    <Entry
+                        x:Name="QuantityEntry"
+                        Placeholder="Digite a quantidade"
+                        Keyboard="Numeric" />
+
+                    <Label
+                        Text="Observação"
+                        FontAttributes="Bold" />
+
+                    <Editor
+                        x:Name="ObservationEditor"
+                        Placeholder="Observação opcional"
+                        HeightRequest="100" />
+
+                    <ActivityIndicator
+                        x:Name="LoadingIndicator"
+                        IsVisible="False"
+                        IsRunning="False"
+                        HorizontalOptions="Center" />
+
+                    <Button
+                        x:Name="SaveButton"
+                        Text="Confirmar"
+                        HeightRequest="50"
+                        FontAttributes="Bold"
+                        Clicked="OnSaveClicked" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

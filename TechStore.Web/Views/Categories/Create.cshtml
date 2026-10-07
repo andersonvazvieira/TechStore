@@ -1,0 +1,64 @@
+@model TechStore.Web.Models.CategoryViewModel
+
+@{
+    ViewData["Title"] = "Nova categoria";
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4">
+        <h1 class="display-6 fw-bold">Nova categoria</h1>
+
+        <p class="text-muted">
+            Cadastre uma nova categoria para organizar os produtos
+        </p>
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            @if (ViewBag.Erro != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewBag.Erro
+                </div>
+            }
+
+            <form method="post">
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Nome da categoria
+                    </label>
+
+                    <input type="text"
+                           name="Name"
+                           class="form-control"
+                           placeholder="Ex.: Informática"
+                           required />
+
+                </div>
+
+                <div class="mt-4">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Cadastrar categoria
+                    </button>
+
+                    <a href="/Categories"
+                       class="btn btn-secondary">
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

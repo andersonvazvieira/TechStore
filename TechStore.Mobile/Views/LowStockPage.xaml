@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="TechStore.Mobile.Views.LowStockPage"
+    Title="Estoque baixo"
+    BackgroundColor="#F5F7FA">
+
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,*"
+        RowSpacing="15">
+
+        <VerticalStackLayout Spacing="4">
+            <Label
+                Text="Estoque baixo"
+                FontSize="28"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="Produtos que atingiram o estoque mínimo"
+                TextColor="#6C757D" />
+        </VerticalStackLayout>
+
+        <RefreshView
+            Grid.Row="1"
+            x:Name="RefreshView"
+            Refreshing="OnRefreshing">
+
+            <CollectionView
+                x:Name="ProductsCollection"
+                EmptyView="Nenhum produto com estoque baixo.">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+
+                        <Border
+                            Margin="0,0,0,12"
+                            Padding="16"
+                            BackgroundColor="White"
+                            Stroke="#DEE2E6">
+
+                            <VerticalStackLayout Spacing="6">
+
+                                <Label
+                                    Text="{Binding Name}"
+                                    FontSize="19"
+                                    FontAttributes="Bold" />
+
+                                <Label
+                                    Text="{Binding Code, StringFormat='Código: {0}'}"
+                                    TextColor="#6C757D" />
+
+                                <Grid
+                                    ColumnDefinitions="*,*">
+
+                                    <VerticalStackLayout>
+                                        <Label
+                                            Text="Estoque atual"
+                                            FontSize="12"
+                                            TextColor="#6C757D" />
+
+                                        <Label
+                                            Text="{Binding Quantity}"
+                                            FontSize="22"
+                                            FontAttributes="Bold"
+                                            TextColor="#DC3545" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout
+                                        Grid.Column="1">
+
+                                        <Label
+                                            Text="Estoque mínimo"
+                                            FontSize="12"
+                                            TextColor="#6C757D"
+                                            HorizontalTextAlignment="End" />
+
+                                        <Label
+                                            Text="{Binding MinimumStock}"
+                                            FontSize="22"
+                                            FontAttributes="Bold"
+                                            HorizontalTextAlignment="End" />
+                                    </VerticalStackLayout>
+
+                                </Grid>
+
+                            </VerticalStackLayout>
+
+                        </Border>
+
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+        </RefreshView>
+
+    </Grid>
+
+</ContentPage>

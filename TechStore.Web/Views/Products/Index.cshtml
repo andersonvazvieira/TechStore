@@ -1,0 +1,181 @@
+@model List<TechStore.Web.Models.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Produtos";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="display-6 fw-bold">Produtos</h1>
+            <p class="text-muted mb-0">
+                Produtos cadastrados no sistema
+            </p>
+        </div>
+
+        <a asp-controller="Products"
+           asp-action="Create"
+           class="btn btn-primary">
+            Novo produto
+        </a>
+
+    </div>
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["Sucesso"]
+        </div>
+    }
+
+    @if (TempData["Erro"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["Erro"]
+        </div>
+    }
+
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Erro
+        </div>
+    }
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <form method="get"
+                  asp-controller="Products"
+                  asp-action="Index">
+
+                <div class="row g-2">
+
+                    <div class="col-md-9">
+                        <input type="text"
+                               name="search"
+                               value="@ViewBag.Search"
+                               class="form-control"
+                               placeholder="Pesquisar por nome ou código..." />
+                    </div>
+
+                    <div class="col-md-3 d-flex gap-2">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Pesquisar
+                        </button>
+
+                        <a asp-controller="Products"
+                           asp-action="Index"
+                           class="btn btn-secondary">
+                            Limpar
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            Nenhum produto encontrado.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Produto</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Estoque</th>
+                                <th>Situação</th>
+                                <th class="text-end">Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var product in Model)
+                            {
+                                <tr>
+
+                                    <td>@product.Code</td>
+
+                                    <td>@product.Name</td>
+
+                                    <td>
+                                        @(product.Category?.Name ?? "Sem categoria")
+                                    </td>
+
+                                    <td>
+                                        @product.Price.ToString("C")
+                                    </td>
+
+                                    <td>@product.Quantity</td>
+
+                                    <td>
+                                        @if (product.Quantity <= product.MinimumStock)
+                                        {
+                                            <span class="badge bg-danger">
+                                                Estoque baixo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">
+                                                Normal
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <a asp-controller="Products"
+                                           asp-action="Edit"
+                                           asp-route-id="@product.Id"
+                                           class="btn btn-sm btn-warning">
+                                            Editar
+                                        </a>
+
+                                        <a asp-controller="Products"
+                                           asp-action="Delete"
+                                           asp-route-id="@product.Id"
+                                           class="btn btn-sm btn-danger">
+                                            Excluir
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

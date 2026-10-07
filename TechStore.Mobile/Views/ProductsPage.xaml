@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="TechStore.Mobile.Views.ProductsPage"
+    Title="Produtos"
+    BackgroundColor="#F5F7FA">
+
+    <Grid
+        Padding="20"
+        RowDefinitions="Auto,*"
+        RowSpacing="15">
+
+        <SearchBar
+            x:Name="SearchBar"
+            Placeholder="Pesquisar produto ou código..."
+            TextChanged="OnSearchTextChanged" />
+
+        <RefreshView
+            Grid.Row="1"
+            x:Name="RefreshView"
+            Refreshing="OnRefreshing">
+
+            <CollectionView
+                x:Name="ProductsCollection"
+                EmptyView="Nenhum produto encontrado.">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+
+                        <Border
+                            Margin="0,0,0,12"
+                            Padding="16"
+                            BackgroundColor="White"
+                            Stroke="#DEE2E6">
+
+                            <VerticalStackLayout Spacing="5">
+
+                                <Label
+                                    Text="{Binding Name}"
+                                    FontSize="19"
+                                    FontAttributes="Bold" />
+
+                                <Label
+                                    Text="{Binding Code, StringFormat='Código: {0}'}"
+                                    TextColor="#6C757D" />
+
+                                <Label
+                                    Text="{Binding Category.Name, StringFormat='Categoria: {0}'}"
+                                    TextColor="#6C757D" />
+
+                                <Grid ColumnDefinitions="*,*">
+
+                                    <Label
+                                        Text="{Binding Quantity, StringFormat='Estoque: {0}'}"
+                                        FontAttributes="Bold" />
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding MinimumStock, StringFormat='Mínimo: {0}'}"
+                                        HorizontalTextAlignment="End" />
+
+                                </Grid>
+
+                                <Label
+                                    Text="{Binding Price, StringFormat='Preço: R$ {0:N2}'}"
+                                    FontAttributes="Bold" />
+
+                            </VerticalStackLayout>
+
+                        </Border>
+
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+        </RefreshView>
+
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="TechStore.Mobile.Views.DashboardPage"
+    Title="Dashboard"
+    BackgroundColor="#F5F7FA">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="20">
+
+            <VerticalStackLayout Spacing="3">
+
+                <Label
+                    Text="TechStore"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    TextColor="#0D6EFD" />
+
+                <Label
+                    x:Name="WelcomeLabel"
+                    Text="Bem-vindo"
+                    FontSize="16"
+                    TextColor="#6C757D" />
+
+            </VerticalStackLayout>
+
+            <Grid
+                ColumnDefinitions="*,*"
+                RowDefinitions="Auto,Auto"
+                ColumnSpacing="12"
+                RowSpacing="12">
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="18"
+                    BackgroundColor="White"
+                    Stroke="#DEE2E6">
+
+                    <VerticalStackLayout>
+                        <Label
+                            Text="Produtos"
+                            TextColor="#6C757D" />
+
+                        <Label
+                            x:Name="ProductsLabel"
+                            Text="0"
+                            FontSize="28"
+                            FontAttributes="Bold" />
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Padding="18"
+                    BackgroundColor="White"
+                    Stroke="#DEE2E6">
+
+                    <VerticalStackLayout>
+                        <Label
+                            Text="Categorias"
+                            TextColor="#6C757D" />
+
+                        <Label
+                            x:Name="CategoriesLabel"
+                            Text="0"
+                            FontSize="28"
+                            FontAttributes="Bold" />
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Padding="18"
+                    BackgroundColor="White"
+                    Stroke="#DEE2E6">
+
+                    <VerticalStackLayout>
+                        <Label
+                            Text="Estoque atual"
+                            TextColor="#6C757D" />
+
+                        <Label
+                            x:Name="StockLabel"
+                            Text="0"
+                            FontSize="28"
+                            FontAttributes="Bold" />
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Padding="18"
+                    BackgroundColor="White"
+                    Stroke="#DEE2E6">
+
+                    <VerticalStackLayout>
+                        <Label
+                            Text="Estoque baixo"
+                            TextColor="#6C757D" />
+
+                        <Label
+                            x:Name="LowStockLabel"
+                            Text="0"
+                            FontSize="28"
+                            FontAttributes="Bold"
+                            TextColor="#DC3545" />
+                    </VerticalStackLayout>
+
+                </Border>
+
+            </Grid>
+
+            <Label
+                Text="Acesso rápido"
+                FontSize="20"
+                FontAttributes="Bold"
+                Margin="0,10,0,0" />
+
+            <Button
+                Text="Produtos"
+                HeightRequest="50"
+                Clicked="OnProductsClicked" />
+
+            <Button
+                Text="Estoque baixo"
+                HeightRequest="50"
+                Clicked="OnLowStockClicked" />
+
+            <Button
+                Text="Entrada de estoque"
+                HeightRequest="50"
+                Clicked="OnEntryClicked" />
+
+            <Button
+                Text="Saída de estoque"
+                HeightRequest="50"
+                Clicked="OnExitClicked" />
+
+            <Button
+                Text="Movimentações"
+                HeightRequest="50"
+                Clicked="OnMovementsClicked" />
+
+            <Button
+                Text="Sair"
+                HeightRequest="50"
+                Clicked="OnLogoutClicked" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>
