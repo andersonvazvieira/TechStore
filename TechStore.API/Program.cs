@@ -25,15 +25,17 @@ builder.Services.AddDbContext<TechStoreDbContext>(options =>
 // CONFIGURAÇÃO JWT
 // =====================================================
 
-var jwtKey = builder.Configuration["Jwt:Key"]
-    ?? throw new InvalidOperationException(
-        "A chave JWT não foi configurada.");
+var jwtKey = builder.Configuration["Jwt:Key"];
 
-var jwtIssuer =
-    builder.Configuration["Jwt:Issuer"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException(
+        "A chave JWT não foi configurada. " +
+        "Configure Jwt:Key nos User Secrets.");
+}
 
-var jwtAudience =
-    builder.Configuration["Jwt:Audience"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
 
 builder.Services
     .AddAuthentication(
@@ -51,9 +53,8 @@ builder.Services
                 ValidIssuer = jwtIssuer,
                 ValidAudience = jwtAudience,
 
-                IssuerSigningKey =
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtKey)),
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(jwtKey)),
 
                 ClockSkew = TimeSpan.Zero
             };
@@ -66,12 +67,27 @@ builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
 // =====================================================
+// MIGRATIONS E PRIMEIRO ADMINISTRADOR
+// =====================================================
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider
+        .GetRequiredService<TechStoreDbContext>();
+
+    await context.Database.MigrateAsync();
+
+    await AdminSeeder.InitializeAsync(
+        context,
+        app.Configuration);
+}
+
+// =====================================================
 // PIPELINE
 // =====================================================
 
 app.UseHttpsRedirection();
 
-// AUTENTICAÇÃO DEVE VIR ANTES DA AUTORIZAÇÃO
 app.UseAuthentication();
 
 app.UseAuthorization();
