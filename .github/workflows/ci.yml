@@ -41,3 +41,16 @@ jobs:
           name: resultados-testes-estoque
           path: TestResults/*.trx
           if-no-files-found: warn
+
+  docker:
+    name: Construir imagem Docker da API
+    needs: testes
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      - name: Construir imagem
+        run: docker build --file TechStore.API/Dockerfile --tag techstore-api:ci .
