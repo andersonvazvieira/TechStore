@@ -1,0 +1,43 @@
+name: TechStore CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    name: Compilar API e testar estoque
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restaurar dependencias
+        run: dotnet restore TechStore.Tests/TechStore.Tests.csproj
+
+      - name: Compilar API e projeto de testes
+        run: dotnet build TechStore.Tests/TechStore.Tests.csproj --configuration Release --no-restore
+
+      - name: Executar testes
+        run: dotnet test TechStore.Tests/TechStore.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=estoque.trx" --results-directory TestResults
+
+      - name: Salvar relatorio dos testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-testes-estoque
+          path: TestResults/*.trx
+          if-no-files-found: warn
