@@ -43,7 +43,7 @@ jobs:
           if-no-files-found: warn
 
   docker:
-    name: Construir imagem Docker da API
+    name: Construir e testar API no Docker
     needs: testes
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -54,3 +54,77 @@ jobs:
 
       - name: Construir imagem
         run: docker build --file TechStore.API/Dockerfile --tag techstore-api:ci .
+
+      - name: Iniciar container e testar login
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          export Jwt__Key="$(openssl rand -hex 32)"
+          export InitialAdmin__Password="$(openssl rand -hex 16)"
+
+          echo "::add-mask::$Jwt__Key"
+          echo "::add-mask::$InitialAdmin__Password"
+
+          trap 'docker rm -f techstore-ci >/dev/null 2>&1 || true' EXIT
+
+          docker run --detach \
+            --name techstore-ci \
+            --publish 127.0.0.1:8080:8080 \
+            --env ASPNETCORE_ENVIRONMENT=Production \
+            --env Jwt__Key \
+            --env InitialAdmin__Password \
+            --env InitialAdmin__Name="Administrador CI" \
+            --env InitialAdmin__Email="admin@techstore.local" \
+            techstore-api:ci
+
+          ready=false
+
+          for attempt in {1..30}; do
+            status=$(curl --silent --output /dev/null \
+              --write-out "%{http_code}" \
+              --max-time 2 \
+              http://127.0.0.1:8080/api/stockmovements || true)
+
+            if [ "$status" = "401" ]; then
+              ready=true
+              break
+            fi
+
+            sleep 2
+          done
+
+          if [ "$ready" != "true" ]; then
+            echo "A API nao iniciou como esperado."
+            docker logs techstore-ci
+            exit 1
+          fi
+
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          payload = json.dumps({
+              "email": "admin@techstore.local",
+              "password": os.environ["InitialAdmin__Password"]
+          }).encode()
+
+          request = urllib.request.Request(
+              "http://127.0.0.1:8080/api/auth/login",
+              data=payload,
+              headers={"Content-Type": "application/json"},
+              method="POST"
+          )
+
+          with urllib.request.urlopen(request, timeout=10) as response:
+              result = json.load(response)
+
+          if not result.get("token"):
+              raise RuntimeError("O login nao retornou um token.")
+
+          if result.get("user", {}).get("role") != "Admin":
+              raise RuntimeError("O usuario inicial nao possui perfil Admin.")
+
+          print("API iniciou e login do administrador foi validado.")
+          PY
