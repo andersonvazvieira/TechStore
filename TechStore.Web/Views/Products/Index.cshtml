@@ -6,8 +6,7 @@
 
 <div class="container mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
             <h1 class="display-6 fw-bold">Produtos</h1>
             <p class="text-muted mb-0">
@@ -20,12 +19,11 @@
            class="btn btn-primary">
             Novo produto
         </a>
-
     </div>
 
     @if (TempData["Sucesso"] != null)
     {
-        <div class="alert alert-success" role="alert">
+        <div class="alert alert-success" role="status">
             @TempData["Sucesso"]
         </div>
     }
@@ -49,20 +47,33 @@
 
             <form method="get"
                   asp-controller="Products"
-                  asp-action="Index">
+                  asp-action="Index"
+                  role="search"
+                  aria-label="Pesquisar produtos">
 
-                <div class="row g-2">
-
+                <div class="row g-3 align-items-end">
                     <div class="col-md-9">
-                        <input type="text"
+                        <label for="pesquisa-produtos"
+                               class="form-label">
+                            Pesquisar por nome ou código
+                        </label>
+
+                        <input id="pesquisa-produtos"
+                               type="search"
                                name="search"
                                value="@ViewBag.Search"
                                class="form-control"
-                               placeholder="Pesquisar por nome ou código..." />
+                               placeholder="Digite o nome ou código"
+                               aria-describedby="pesquisa-ajuda" />
+
+                        <p id="pesquisa-ajuda"
+                           class="form-text text-muted mb-0">
+                            Preencha o campo e selecione Pesquisar.
+                            Para exibir todos os produtos, selecione Limpar.
+                        </p>
                     </div>
 
-                    <div class="col-md-3 d-flex gap-2">
-
+                    <div class="col-md-3 d-flex flex-wrap gap-2">
                         <button type="submit"
                                 class="btn btn-primary">
                             Pesquisar
@@ -72,12 +83,12 @@
                            asp-action="Index"
                            class="btn btn-secondary">
                             Limpar
+                            <span class="visually-hidden">
+                                pesquisa de produtos
+                            </span>
                         </a>
-
                     </div>
-
                 </div>
-
             </form>
 
         </div>
@@ -85,41 +96,62 @@
 
     @if (Model.Count == 0)
     {
-        <div class="alert alert-info">
+        <div class="alert alert-info" role="status">
             Nenhum produto encontrado.
         </div>
     }
     else
     {
-        <div class="card shadow-sm">
+        <p id="resumo-produtos" class="text-muted">
+            Produtos encontrados: @Model.Count.
+        </p>
 
+        <div class="card shadow-sm">
             <div class="card-body">
 
-                <div class="table-responsive">
+                <p id="tabela-ajuda" class="text-muted">
+                    Em telas pequenas, a tabela pode ser rolada
+                    horizontalmente. Pelo teclado, foque a região
+                    da tabela e use as setas esquerda e direita.
+                </p>
 
-                    <table class="table table-hover align-middle">
+                <div class="table-responsive"
+                     role="region"
+                     aria-label="Tabela de produtos"
+                     aria-describedby="tabela-ajuda"
+                     tabindex="0">
+
+                    <table class="table table-hover align-middle"
+                           aria-describedby="resumo-produtos">
+
+                        <caption class="visually-hidden">
+                            Produtos cadastrados, preços, quantidades
+                            em estoque e ações disponíveis.
+                        </caption>
 
                         <thead>
                             <tr>
-                                <th>Código</th>
-                                <th>Produto</th>
-                                <th>Categoria</th>
-                                <th>Preço</th>
-                                <th>Estoque</th>
-                                <th>Situação</th>
-                                <th class="text-end">Ações</th>
+                                <th scope="col">Código</th>
+                                <th scope="col">Produto</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col">Preço</th>
+                                <th scope="col">Estoque</th>
+                                <th scope="col">Situação</th>
+                                <th scope="col" class="text-end">
+                                    Ações
+                                </th>
                             </tr>
                         </thead>
 
                         <tbody>
-
                             @foreach (var product in Model)
                             {
                                 <tr>
-
                                     <td>@product.Code</td>
 
-                                    <td>@product.Name</td>
+                                    <th scope="row" class="fw-normal">
+                                        @product.Name
+                                    </th>
 
                                     <td>
                                         @(product.Category?.Name ?? "Sem categoria")
@@ -147,12 +179,15 @@
                                     </td>
 
                                     <td class="text-end">
-
                                         <a asp-controller="Products"
                                            asp-action="Edit"
                                            asp-route-id="@product.Id"
                                            class="btn btn-sm btn-warning">
                                             Editar
+                                            <span class="visually-hidden">
+                                                produto @product.Name,
+                                                código @product.Code
+                                            </span>
                                         </a>
 
                                         <a asp-controller="Products"
@@ -160,21 +195,20 @@
                                            asp-route-id="@product.Id"
                                            class="btn btn-sm btn-danger">
                                             Excluir
+                                            <span class="visually-hidden">
+                                                produto @product.Name,
+                                                código @product.Code
+                                            </span>
                                         </a>
-
                                     </td>
-
                                 </tr>
                             }
-
                         </tbody>
 
                     </table>
-
                 </div>
 
             </div>
-
         </div>
     }
 

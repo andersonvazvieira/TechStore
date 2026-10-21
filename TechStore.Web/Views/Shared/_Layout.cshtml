@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport"
@@ -20,12 +20,15 @@
 </head>
 
 <body>
+    <a class="skip-link" href="#conteudo-principal">
+        Pular para o conteúdo principal
+    </a>
 
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3"
+             aria-label="Navegação principal">
 
             <div class="container-fluid">
-
                 <a class="navbar-brand"
                    asp-controller="Home"
                    asp-action="Index">
@@ -35,18 +38,19 @@
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target=".navbar-collapse"
+                        data-bs-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent"
                         aria-expanded="false"
-                        aria-label="Alternar navegação">
+                        aria-label="Expandir ou recolher menu principal">
 
-                    <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon"
+                          aria-hidden="true"></span>
                 </button>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div id="navbarSupportedContent"
+                     class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
                     <ul class="navbar-nav flex-grow-1">
-
                         <li class="nav-item">
                             <a class="nav-link text-dark"
                                asp-controller="Home"
@@ -115,7 +119,6 @@
                                 </a>
                             </li>
                         }
-
                     </ul>
 
                     @if (Context.Session.GetString("JWToken") != null)
@@ -126,37 +129,30 @@
                               class="d-flex">
 
                             <button type="submit"
-                                    class="btn btn-outline-danger">
+                                    class="btn btn-outline-danger"
+                                    aria-label="Sair da conta">
                                 Sair
                             </button>
-
                         </form>
                     }
-
                 </div>
-
             </div>
-
         </nav>
     </header>
 
     <div class="container">
-
-        <main role="main"
+        <main id="conteudo-principal"
+              tabindex="-1"
               class="pb-3">
 
             @RenderBody()
-
         </main>
-
     </div>
 
     <footer class="border-top footer text-muted">
-
         <div class="container">
             &copy; 2026 - TechStore
         </div>
-
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -166,9 +162,6 @@
     <script src="~/js/site.js"
             asp-append-version="true"></script>
 
-    @await RenderSectionAsync(
-        "Scripts",
-        required: false)
-
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
