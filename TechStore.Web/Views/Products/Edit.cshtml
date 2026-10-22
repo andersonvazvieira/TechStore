@@ -7,149 +7,178 @@
 <div class="container mt-4">
 
     <div class="mb-4">
-        <h1 class="display-6 fw-bold">
+        <h1 id="editar-titulo" class="display-6 fw-bold">
             Editar produto
         </h1>
 
-        <p class="text-muted">
-            Altere as informações do produto
+        <p id="editar-instrucoes" class="text-muted">
+            Altere as informações de @Model.Name.
+            Nome, código, preço, quantidade e estoque mínimo
+            são obrigatórios.
         </p>
     </div>
 
     <div class="card shadow-sm">
-
         <div class="card-body">
 
             @if (ViewBag.Erro != null)
             {
-                <div class="alert alert-danger">
+                <div class="alert alert-danger" role="alert">
                     @ViewBag.Erro
                 </div>
             }
 
             <form asp-controller="Products"
                   asp-action="Edit"
-                  method="post">
+                  method="post"
+                  aria-labelledby="editar-titulo"
+                  aria-describedby="editar-instrucoes">
 
-                <input type="hidden"
-                       asp-for="Id" />
+                <input type="hidden" asp-for="Id" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"
+                     role="alert"></div>
 
                 <div class="row g-3">
 
                     <div class="col-md-6">
-
-                        <label asp-for="Name"
-                               class="form-label">
-                            Nome
+                        <label asp-for="Name" class="form-label">
+                            Nome (obrigatório)
                         </label>
 
                         <input asp-for="Name"
                                class="form-control"
+                               aria-describedby="nome-erro"
                                required />
 
+                        <span asp-validation-for="Name"
+                              id="nome-erro"
+                              class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
-
-                        <label asp-for="Code"
-                               class="form-label">
-                            Código
+                        <label asp-for="Code" class="form-label">
+                            Código (obrigatório)
                         </label>
 
                         <input asp-for="Code"
                                class="form-control"
+                               aria-describedby="codigo-erro"
                                required />
 
+                        <span asp-validation-for="Code"
+                              id="codigo-erro"
+                              class="text-danger"></span>
                     </div>
 
                     <div class="col-12">
-
-                        <label asp-for="Description"
-                               class="form-label">
-                            Descrição
+                        <label asp-for="Description" class="form-label">
+                            Descrição (opcional)
                         </label>
 
                         <textarea asp-for="Description"
                                   class="form-control"
-                                  rows="3"></textarea>
+                                  rows="3"
+                                  aria-describedby="descricao-erro"></textarea>
 
+                        <span asp-validation-for="Description"
+                              id="descricao-erro"
+                              class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
-
-                        <label asp-for="Price"
-                               class="form-label">
-                            Preço
+                        <label asp-for="Price" class="form-label">
+                            Preço em reais (obrigatório)
                         </label>
 
-                        <input type="text"
+                        <input id="Price"
+                               type="text"
                                name="Price"
                                value="@Model.Price"
                                class="form-control"
                                inputmode="decimal"
+                               aria-describedby="preco-ajuda preco-erro"
                                required />
 
+                        <p id="preco-ajuda" class="form-text text-muted">
+                            Utilize vírgula decimal. Exemplo: 99,90.
+                        </p>
+
+                        <span asp-validation-for="Price"
+                              id="preco-erro"
+                              class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
-
-                        <label asp-for="CategoryId"
-                               class="form-label">
-                            Categoria
+                        <label asp-for="CategoryId" class="form-label">
+                            Categoria (opcional)
                         </label>
 
                         <select asp-for="CategoryId"
-                                class="form-select">
+                                class="form-select"
+                                aria-describedby="categoria-erro">
 
-                            <option value="">
-                                Selecione uma categoria
-                            </option>
+                            <option value="">Sem categoria</option>
 
-                            @foreach (var category in ViewBag.Categories)
+                            @if (ViewBag.Categories != null)
                             {
-                                <option value="@category.Id">
-                                    @category.Name
-                                </option>
+                                foreach (var category in ViewBag.Categories)
+                                {
+                                    <option value="@category.Id">
+                                        @category.Name
+                                    </option>
+                                }
                             }
-
                         </select>
 
+                        <span asp-validation-for="CategoryId"
+                              id="categoria-erro"
+                              class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
-
-                        <label asp-for="Quantity"
-                               class="form-label">
-                            Quantidade
+                        <label asp-for="Quantity" class="form-label">
+                            Quantidade (obrigatório)
                         </label>
 
                         <input asp-for="Quantity"
                                type="number"
                                min="0"
+                               step="1"
                                class="form-control"
+                               aria-describedby="quantidade-erro"
                                required />
 
+                        <span asp-validation-for="Quantity"
+                              id="quantidade-erro"
+                              class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
-
-                        <label asp-for="MinimumStock"
-                               class="form-label">
-                            Estoque mínimo
+                        <label asp-for="MinimumStock" class="form-label">
+                            Estoque mínimo (obrigatório)
                         </label>
 
                         <input asp-for="MinimumStock"
                                type="number"
                                min="0"
+                               step="1"
                                class="form-control"
+                               aria-describedby="minimo-ajuda minimo-erro"
                                required />
 
+                        <p id="minimo-ajuda" class="form-text text-muted">
+                            Informe uma quantidade inteira igual ou maior que zero.
+                        </p>
+
+                        <span asp-validation-for="MinimumStock"
+                              id="minimo-erro"
+                              class="text-danger"></span>
                     </div>
 
-                    <div class="col-12 mt-4">
-
-                        <button type="submit"
-                                class="btn btn-primary">
+                    <div class="col-12 mt-4 d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-primary">
                             Salvar alterações
                         </button>
 
@@ -158,15 +187,11 @@
                            class="btn btn-secondary">
                             Cancelar
                         </a>
-
                     </div>
 
                 </div>
-
             </form>
 
         </div>
-
     </div>
-
 </div>

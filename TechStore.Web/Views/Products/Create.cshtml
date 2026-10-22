@@ -7,100 +7,143 @@
 <div class="container mt-4">
 
     <div class="mb-4">
-        <h1 class="display-6 fw-bold">
+        <h1 id="cadastro-titulo" class="display-6 fw-bold">
             Novo produto
         </h1>
 
-        <p class="text-muted">
-            Cadastre um novo produto no sistema
+        <p id="cadastro-instrucoes" class="text-muted">
+            Nome, código, preço e estoque mínimo são obrigatórios.
+            Descrição e categoria são opcionais.
+        </p>
+
+        <p id="estoque-instrucoes" class="text-muted">
+            O produto será cadastrado com estoque zero.
+            Utilize Entrada e Saída para registrar movimentações.
         </p>
     </div>
 
     @if (ViewBag.Erro != null)
     {
-        <div class="alert alert-danger">
+        <div class="alert alert-danger" role="alert">
             @ViewBag.Erro
         </div>
     }
 
     <div class="card shadow-sm">
-
         <div class="card-body">
 
-            <form asp-action="Create" method="post">
+            <form asp-action="Create"
+                  method="post"
+                  aria-labelledby="cadastro-titulo"
+                  aria-describedby="cadastro-instrucoes estoque-instrucoes">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"
+                     role="alert"></div>
 
                 <div class="mb-3">
-                    <label asp-for="Name"
-                           class="form-label">
-                        Nome
+                    <label asp-for="Name" class="form-label">
+                        Nome (obrigatório)
                     </label>
 
                     <input asp-for="Name"
                            class="form-control"
+                           aria-describedby="nome-erro"
                            required />
+
+                    <span asp-validation-for="Name"
+                          id="nome-erro"
+                          class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Code"
-                           class="form-label">
-                        Código
+                    <label asp-for="Code" class="form-label">
+                        Código (obrigatório)
                     </label>
 
                     <input asp-for="Code"
                            class="form-control"
+                           aria-describedby="codigo-ajuda codigo-erro"
                            required />
+
+                    <p id="codigo-ajuda" class="form-text text-muted">
+                        Utilize um código que ainda não esteja cadastrado.
+                    </p>
+
+                    <span asp-validation-for="Code"
+                          id="codigo-erro"
+                          class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Description"
-                           class="form-label">
-                        Descrição
+                    <label asp-for="Description" class="form-label">
+                        Descrição (opcional)
                     </label>
 
                     <textarea asp-for="Description"
                               class="form-control"
-                              rows="3">
-                    </textarea>
+                              rows="3"
+                              aria-describedby="descricao-erro"></textarea>
+
+                    <span asp-validation-for="Description"
+                          id="descricao-erro"
+                          class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Price"
-                           class="form-label">
-                        Preço
+                    <label asp-for="Price" class="form-label">
+                        Preço em reais (obrigatório)
                     </label>
 
                     <input asp-for="Price"
                            type="text"
                            inputmode="decimal"
                            class="form-control"
+                           aria-describedby="preco-ajuda preco-erro"
                            required />
+
+                    <p id="preco-ajuda" class="form-text text-muted">
+                        Informe o valor com vírgula decimal,
+                        por exemplo: 99,90.
+                    </p>
+
+                    <span asp-validation-for="Price"
+                          id="preco-erro"
+                          class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="MinimumStock"
-                           class="form-label">
-                        Estoque mínimo
+                    <label asp-for="MinimumStock" class="form-label">
+                        Estoque mínimo (obrigatório)
                     </label>
 
                     <input asp-for="MinimumStock"
                            type="number"
                            min="0"
+                           step="1"
                            class="form-control"
+                           aria-describedby="minimo-ajuda minimo-erro"
                            required />
+
+                    <p id="minimo-ajuda" class="form-text text-muted">
+                        Informe uma quantidade inteira igual ou maior que zero.
+                    </p>
+
+                    <span asp-validation-for="MinimumStock"
+                          id="minimo-erro"
+                          class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="CategoryId"
-                           class="form-label">
-                        Categoria
+                    <label asp-for="CategoryId" class="form-label">
+                        Categoria (opcional)
                     </label>
 
                     <select asp-for="CategoryId"
-                            class="form-select">
+                            class="form-select"
+                            aria-describedby="categoria-erro">
 
-                        <option value="">
-                            Selecione uma categoria
-                        </option>
+                        <option value="">Sem categoria</option>
 
                         @if (ViewBag.Categories != null)
                         {
@@ -111,36 +154,29 @@
                                 </option>
                             }
                         }
-
                     </select>
-                </div>
 
-                @* Todo produto é cadastrado com estoque zero.
-                   O estoque deve ser alterado somente
-                   através de Entrada e Saída. *@
+                    <span asp-validation-for="CategoryId"
+                          id="categoria-erro"
+                          class="text-danger"></span>
+                </div>
 
                 <input type="hidden"
                        asp-for="Quantity"
                        value="0" />
 
-                <div class="d-flex gap-2">
-
-                    <button type="submit"
-                            class="btn btn-primary">
-                        Salvar
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        Salvar produto
                     </button>
 
-                    <a asp-action="Index"
-                       class="btn btn-secondary">
+                    <a asp-action="Index" class="btn btn-secondary">
                         Cancelar
                     </a>
-
                 </div>
 
             </form>
 
         </div>
-
     </div>
-
 </div>

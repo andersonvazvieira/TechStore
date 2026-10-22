@@ -7,86 +7,81 @@
 <div class="container mt-4">
 
     <div class="mb-4">
-        <h1 class="display-6 fw-bold">Excluir produto</h1>
+        <h1 id="excluir-titulo" class="display-6 fw-bold">
+            Excluir produto
+        </h1>
 
         <p class="text-muted">
-            Confirme a exclusão do produto
+            Confira os dados antes de confirmar.
         </p>
     </div>
 
     <div class="card shadow-sm">
-
         <div class="card-body">
 
-            <div class="alert alert-warning">
+            @if (ViewBag.Erro != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.Erro
+                </div>
+            }
+
+            <div id="exclusao-aviso" class="alert alert-warning">
                 <strong>Atenção!</strong>
-                Tem certeza de que deseja excluir este produto?
+                A exclusão removerá o cadastro do produto
+                <strong>@Model.Name</strong>,
+                código <strong>@Model.Code</strong>.
+                Para manter o cadastro, selecione Cancelar.
             </div>
 
             <dl class="row">
+                <dt class="col-sm-3">Produto</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
 
-                <dt class="col-sm-3">
-                    Produto
-                </dt>
+                <dt class="col-sm-3">Código</dt>
+                <dd class="col-sm-9">@Model.Code</dd>
 
-                <dd class="col-sm-9">
-                    @Model.Name
-                </dd>
-
-                <dt class="col-sm-3">
-                    Código
-                </dt>
-
-                <dd class="col-sm-9">
-                    @Model.Code
-                </dd>
-
-                <dt class="col-sm-3">
-                    Categoria
-                </dt>
-
+                <dt class="col-sm-3">Categoria</dt>
                 <dd class="col-sm-9">
                     @(Model.Category?.Name ?? "Sem categoria")
                 </dd>
 
-                <dt class="col-sm-3">
-                    Preço
-                </dt>
-
+                <dt class="col-sm-3">Preço</dt>
                 <dd class="col-sm-9">
-                    R$ @Model.Price.ToString("N2")
+                    @Model.Price.ToString("C")
                 </dd>
 
-                <dt class="col-sm-3">
-                    Estoque atual
-                </dt>
-
-                <dd class="col-sm-9">
-                    @Model.Quantity
-                </dd>
-
+                <dt class="col-sm-3">Estoque atual</dt>
+                <dd class="col-sm-9">@Model.Quantity</dd>
             </dl>
 
-            <form method="post">
+            <form method="post"
+                  aria-labelledby="excluir-titulo"
+                  aria-describedby="exclusao-aviso">
+
+                @Html.AntiForgeryToken()
 
                 <input type="hidden"
                        name="Id"
                        value="@Model.Id" />
 
-                <button type="submit"
-                        class="btn btn-danger">
-                    Confirmar exclusão
-                </button>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        Confirmar exclusão
+                        <span class="visually-hidden">
+                            do produto @Model.Name,
+                            código @Model.Code
+                        </span>
+                    </button>
 
-                <a href="/Products"
-                   class="btn btn-secondary">
-                    Cancelar
-                </a>
-
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       class="btn btn-secondary">
+                        Cancelar
+                    </a>
+                </div>
             </form>
 
         </div>
-
     </div>
-
 </div>
