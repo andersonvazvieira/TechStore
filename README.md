@@ -1,12 +1,14 @@
 # TechStore
 
-Sistema de gerenciamento de estoque desenvolvido com .NET.
+Sistema de gerenciamento de estoque desenvolvido com C# e .NET 10.
 
 ## Sobre o projeto
 
-O TechStore é uma aplicação para gerenciamento de produtos e estoque, composta por API REST, aplicação Web MVC e aplicativo .NET MAUI.
+O TechStore foi desenvolvido para o Projeto Integrado Multidisciplinar IV do curso de Análise e Desenvolvimento de Sistemas.
 
-O sistema permite gerenciar produtos, categorias, usuários, entradas e saídas de estoque, histórico de movimentações e produtos com estoque baixo.
+A solução é composta por API REST, aplicação Web MVC e aplicativo .NET MAUI para Windows, utilizando a mesma API e o mesmo banco de dados.
+
+O sistema permite gerenciar produtos, categorias, usuários e movimentações de estoque, além de consultar indicadores e produtos com estoque baixo.
 
 ## Tecnologias
 
@@ -17,57 +19,71 @@ O sistema permite gerenciar produtos, categorias, usuários, entradas e saídas 
 - Entity Framework Core
 - SQLite
 - JWT
-- .NET MAUI
-- HTML/CSS
+- .NET MAUI para Windows
+- HTML e CSS
 - Bootstrap
 - xUnit
+- Git e GitHub
+- GitHub Actions
+- Docker
 
-## Estrutura
+## Estrutura do projeto
 
-### TechStore.API
+| Projeto | Responsabilidade |
+|---------|------------------|
+| TechStore.API | Autenticação, regras de negócio e acesso ao banco de dados. |
+| TechStore.Web | Aplicação Web MVC que consome a API. |
+| TechStore.Mobile | Aplicativo .NET MAUI para Windows que consome a API. |
+| TechStore.Tests | Testes automatizados das regras de estoque e das triggers. |
 
-API responsável pela autenticação, regras de negócio e acesso ao banco de dados.
+Outros arquivos importantes:
 
-### TechStore.Web
-
-Aplicação Web MVC que consome a TechStore.API.
-
-### TechStore.Mobile
-
-Aplicativo desenvolvido com .NET MAUI que consome a TechStore.API.
-
-### TechStore.Tests
-
-Projeto de testes automatizados das regras de estoque.
+- `database/TechStore.sql`: script SQL da estrutura do banco e das triggers.
+- `.github/workflows/ci.yml`: pipeline de integração contínua.
+- `TechStore.API/Dockerfile`: configuração da imagem Docker da API.
+- `.dockerignore`: exclusões do contexto de construção da imagem.
+- `evidencias/testes`: relatórios de testes registrados no projeto.
 
 ## Funcionalidades
 
 - Autenticação com JWT.
 - Controle de acesso pelos perfis Admin e User.
-- Criação do primeiro administrador por configuração local.
-- Cadastro de produtos.
-- Cadastro de categorias.
+- Criação do primeiro administrador por configuração.
+- Cadastro, consulta, edição e exclusão de produtos.
+- Cadastro, consulta, edição e exclusão de categorias.
 - Gerenciamento de usuários pelo administrador.
-- Controle de estoque.
-- Entrada e saída de produtos.
-- Bloqueio de estoque negativo.
-- Rejeição de quantidades inválidas.
+- Pesquisa de produtos por nome ou código.
+- Registro de entradas e saídas de estoque.
 - Histórico de movimentações.
 - Consulta de produtos com estoque baixo.
-- Dashboard.
-- Pesquisa de produtos.
-- Sessão persistente no Mobile.
-- Logout.
-- Tratamento de sessão expirada.
+- Dashboard com indicadores.
+- Sessão persistente no aplicativo MAUI.
+- Logout e tratamento de sessão expirada.
+
+## Regras de negócio
+
+- Código de produto único.
+- E-mail de usuário único.
+- Produtos cadastrados com estoque inicial zero.
+- Alteração do estoque por movimentações de entrada e saída.
+- Quantidade da movimentação maior que zero.
+- Bloqueio de saída superior ao saldo disponível.
+- Registro das movimentações válidas no histórico.
+- Bloqueio de exclusão de produtos com movimentações.
+- Bloqueio de exclusão de categorias com produtos.
+- Proteção contra remoção do último administrador.
+- Autenticação obrigatória nos recursos protegidos.
 
 ## Arquitetura
 
-A aplicação Web e o aplicativo Mobile utilizam a mesma API e o mesmo banco:
+A aplicação Web e o aplicativo MAUI utilizam a mesma API:
 
 - TechStore.Web → TechStore.API → SQLite.
-- TechStore.Mobile → TechStore.API → SQLite.
+- TechStore.Mobile no Windows → TechStore.API → SQLite.
 
-Os clientes consultam e atualizam os dados centralizados na API.
+A API concentra as regras de negócio e o acesso aos dados.
+
+As interfaces consultam e atualizam as informações por requisições HTTP.
 
 ## Banco de dados
 
@@ -80,50 +96,80 @@ Principais entidades:
 - StockMovement
 - User
 
-A API aplica as migrations ao iniciar.
+Relacionamentos:
+
+- Uma categoria pode possuir vários produtos.
+- Um produto pode ter uma categoria.
+- Um produto pode possuir várias movimentações.
+- Cada movimentação pertence a um produto.
+
+A API aplica as migrations durante a inicialização.
+
+### Triggers de proteção do estoque
+
+Foram implementadas duas triggers na tabela Products:
+
+- `TR_Products_PreventNegativeStock_Insert`: impede a inserção de produtos com quantidade negativa.
+- `TR_Products_PreventNegativeStock_Update`: impede a atualização da quantidade para um valor negativo.
+
+As triggers funcionam como proteção adicional no banco. A atualização do saldo e o registro das movimentações são realizados pela API.
+
+O script SQL está disponível em:
+
+```text
+database/TechStore.sql
+```
+
+## Segurança
+
+A autenticação utiliza JWT com validação de:
+
+- Emissor.
+- Destinatário.
+- Validade.
+- Assinatura.
+
+As senhas são armazenadas com hash por meio do PasswordHasher.
+
+A chave JWT e as credenciais do primeiro administrador são configuradas localmente usando .NET User Secrets no ambiente de desenvolvimento.
 
 ## Pré-requisitos
 
 - SDK do .NET 10.
-- Git para clonar e versionar o projeto.
-- Para o Mobile Windows: Windows e ferramentas do .NET MAUI.
-- Para Android: ferramentas do .NET MAUI, Android SDK e JDK compatíveis.
+- Git.
+- Windows com as ferramentas do .NET MAUI instaladas para executar o aplicativo TechStore.Mobile.
+- Visual Studio Code ou outro editor compatível com .NET.
 
-## Segurança
+## Obtendo o projeto
 
-A autenticação utiliza JWT, com validação de emissor, destinatário, validade e assinatura.
+No terminal:
 
-As senhas são armazenadas com hash usando PasswordHasher.
+```powershell
+git clone https://github.com/andersonvazvieira/TechStore.git
+cd TechStore
+```
 
-As credenciais e a chave JWT não devem ser incluídas no repositório.
+## Configuração inicial da API
 
-No desenvolvimento, esses valores são configurados usando .NET User Secrets.
-
-## Configuração inicial
-
-Execute os comandos abaixo no terminal PowerShell.
-
-A partir da pasta principal do projeto, entre na API:
+Na pasta principal do projeto:
 
 ```powershell
 cd TechStore.API
 ```
 
-### Chave JWT
+### Configurar a chave JWT
 
-Configure uma chave JWT aleatória com pelo menos 32 bytes.
+Defina uma chave aleatória com pelo menos 32 bytes.
 
-Substitua o marcador abaixo pela sua própria chave. Não utilize o texto de exemplo como chave:
+Substitua o marcador abaixo pela sua própria chave:
 
 ```powershell
 dotnet user-secrets set "Jwt:Key" "SUBSTITUA-POR-SUA-CHAVE-ALEATORIA"
 ```
 
-Se a chave já estiver configurada, não é necessário repetir esse passo.
+### Configurar o primeiro administrador
 
-### Primeiro administrador
-
-Configure o nome e o e-mail:
+Configure nome e e-mail:
 
 ```powershell
 dotnet user-secrets set "InitialAdmin:Name" "Administrador TechStore"
@@ -142,13 +188,11 @@ $adminCredential = Get-Credential -UserName "admin@techstore.local" -Message "De
 Remove-Variable adminCredential
 ```
 
-Quando não existe administrador, a API cria uma conta com essas credenciais.
+Quando não existe administrador, a API cria a primeira conta com essas configurações.
 
-Se já existe um administrador, nenhuma conta ou senha é alterada.
+Se já existe um administrador, as contas e senhas existentes são preservadas. Alterar a configuração não redefine a senha de uma conta existente.
 
-Se o e-mail configurado pertencer a uma conta sem perfil Admin, a inicialização solicita um e-mail diferente.
-
-User Secrets é utilizado no ambiente de desenvolvimento. Em outros ambientes, forneça as configurações por um mecanismo de segredos ou por variáveis de ambiente.
+Se o e-mail configurado já pertencer a um usuário sem perfil Admin, configure outro e-mail para o primeiro administrador.
 
 ## Executando a API
 
@@ -159,47 +203,53 @@ cd TechStore.API
 dotnet run
 ```
 
-No ambiente de desenvolvimento utilizado no projeto, o endereço é:
+No perfil HTTP de desenvolvimento, a API utiliza:
 
+```text
 http://localhost:5221
+```
 
-Confira o endereço exibido no terminal e mantenha a API em execução enquanto utiliza o Web ou o Mobile.
+Confira o endereço exibido no terminal.
 
-## Executando o Web
+Mantenha a API em execução enquanto utiliza a aplicação Web ou o aplicativo MAUI.
 
-Com a API rodando, abra outro terminal na pasta principal do projeto:
+## Executando a aplicação Web
+
+Com a API em execução, abra outro terminal na pasta principal do projeto:
 
 ```powershell
 cd TechStore.Web
 dotnet run
 ```
 
-Abra no navegador o endereço exibido no terminal do Web.
+Abra no navegador o endereço exibido no terminal da aplicação Web.
 
-No primeiro acesso a um banco novo, utilize o e-mail e a senha configurados para o administrador.
+Utilize o e-mail e a senha do administrador configurado ou de um usuário já cadastrado.
 
-Se o banco já possui um administrador, utilize as credenciais existentes.
+## Executando o aplicativo MAUI no Windows
 
-## Executando o Mobile no Windows
-
-Com a API rodando, abra outro terminal na pasta principal do projeto:
+Com a API em execução, abra outro terminal na pasta principal do projeto:
 
 ```powershell
 cd TechStore.Mobile
 dotnet run -f net10.0-windows10.0.19041.0
 ```
 
+O projeto TechStore.Mobile está configurado para execução no Windows.
+
+Utilize as mesmas credenciais da aplicação Web.
+
 ## Testes automatizados
 
-Na pasta principal do projeto, execute:
+Na pasta principal do projeto:
 
 ```powershell
 dotnet test .\TechStore.Tests\TechStore.Tests.csproj
 ```
 
-Os testes utilizam um banco SQLite temporário em memória, independente do banco utilizado pela aplicação.
+A suíte possui 17 casos automatizados com xUnit e SQLite temporário em memória, independente do banco da aplicação.
 
-São verificados 14 casos, incluindo:
+Os testes verificam:
 
 - Entrada com atualização do saldo e registro da movimentação.
 - Saída com atualização do saldo e registro da movimentação.
@@ -209,10 +259,13 @@ São verificados 14 casos, incluindo:
 - Rejeição de tipos de movimentação inválidos.
 - Rejeição de produto inexistente.
 - Normalização do tipo da movimentação.
+- Bloqueio de inserção com estoque negativo pela trigger.
+- Bloqueio de atualização para estoque negativo pela trigger.
+- Aceitação de estoque zero ou positivo.
 
-Esses testes verificam o controller e a persistência das regras de estoque. Não abrangem autenticação, interfaces ou concorrência.
+### Gerando relatório dos testes
 
-Para gerar o relatório TRX, execute na pasta principal:
+Na pasta principal do projeto:
 
 ```powershell
 dotnet test .\TechStore.Tests\TechStore.Tests.csproj --logger "trx;LogFileName=estoque.trx" --results-directory .\evidencias\testes
@@ -224,18 +277,65 @@ O relatório será salvo em:
 evidencias/testes/estoque.trx
 ```
 
-## Android
+## Integração contínua
 
-O projeto possui target Android por meio do .NET MAUI.
+O GitHub Actions executa o pipeline em pushes e pull requests destinados à branch main. Também permite execução manual.
 
-A configuração do ambiente, a compilação e os testes no Android ainda estão pendentes.
+O processo:
 
-Também é necessário adequar o endereço da API ao dispositivo ou emulador.
+1. Obtém o código do repositório.
+2. Configura o SDK do .NET 10.
+3. Restaura as dependências.
+4. Compila a API e o projeto de testes.
+5. Executa os testes automatizados.
+6. Disponibiliza o relatório TRX.
+7. Constrói a imagem Docker da API.
+8. Inicializa um contêiner com configurações temporárias.
+9. Verifica uma rota protegida.
+10. Testa o login do administrador e a emissão do token.
 
-## Validação e pendências
+As execuções podem ser acompanhadas na aba Actions do repositório.
 
-- API, Web e Mobile Windows: execução e integração verificadas manualmente.
-- Regras de estoque: 14 casos automatizados aprovados.
-- Primeiro administrador: criação e login verificados em banco separado.
-- Android: configuração do ambiente, compilação e testes pendentes.
-- Demais melhorias solicitadas na revisão acadêmica: em andamento.
+## Docker
+
+A API possui um Dockerfile com etapas de compilação e execução.
+
+A imagem é construída e sua inicialização é verificada pelo pipeline do GitHub Actions.
+
+Com Docker instalado, a imagem também pode ser construída a partir da pasta principal:
+
+```powershell
+docker build -f TechStore.API/Dockerfile -t techstore-api .
+```
+
+A execução do contêiner exige as configurações de banco, JWT e primeiro administrador apropriadas ao ambiente.
+
+## Acessibilidade
+
+Foram implementadas melhorias no layout, no login e nas telas de produtos da aplicação Web, incluindo:
+
+- Rótulos associados aos campos.
+- Indicação visual de foco.
+- Atalho para o conteúdo principal.
+- Mensagens de validação vinculadas aos campos.
+- Identificação de cabeçalhos nas tabelas.
+- Identificação dos produtos nos links de edição e exclusão.
+
+## Validações realizadas
+
+- Execução da API.
+- Execução da aplicação Web.
+- Execução do aplicativo MAUI no Windows.
+- Integração das interfaces com a API.
+- Autenticação e controle de acesso.
+- Criação do primeiro administrador.
+- Entradas, saídas e histórico de estoque.
+- Consulta de produtos e estoque baixo.
+- Persistência de sessão e logout no MAUI.
+- Aprovação dos 17 testes automatizados.
+- Execução do pipeline de integração contínua.
+- Construção e inicialização da API em contêiner Docker.
+
+## Repositório
+
+https://github.com/andersonvazvieira/TechStore
